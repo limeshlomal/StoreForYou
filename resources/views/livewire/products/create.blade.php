@@ -1,10 +1,76 @@
 <?php
 
 use Livewire\Volt\Component;
+use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 new class extends Component {
-    //
-}; ?>
+    
+public function with()
+{
+    return [
+       'categories' => Category::where('is_active', true)->orderBy('name')->get()
+    ];
+}
+
+public $barcode;
+public $name;
+public $category_id;
+public $stock;
+public $price;
+
+
+public function save()
+{
+    $this->validate([
+        'barcode' => 'required',
+        'name' => 'required|string|max:255',
+        'category_id' => 'required',
+        'stock' => 'required|integer|min:0',
+        'price' => 'required'
+    ]);
+
+    // Show confirmation modal
+    $this->dispatch('show-confirmation');
+}
+
+public function confirmSave()
+{
+    try {
+        if(Product::where('barcode', $this->barcode)->exists())
+        {
+            $this->dispatch('show-error', message:'Product code already exists. Please use different code!');
+            return;
+        }
+
+        Product::create([
+            'barcode' => $this->barcode,
+            'name' => $this->name,
+            'category_id' => $this->category_id,
+            'quantity' => $this->stock,
+            'retail_price' => $this->price,
+            'is_active' => true,
+            'created_by' => Auth::id()
+        ]);
+
+        $this->reset();
+        $this->dispatch('show-success', message: 'Product created successfully!');
+
+    } catch (\Throwable $th) {
+        $this->dispatch('show-error', message: 'An error occured while creating the product. Please try again!');
+    }
+}
+
+    public function cancel()
+    {
+        $this->reset();
+    }
+
+    
+}; 
+
+?>
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4">
     <div class="max-w-4xl mx-auto">
         {{-- Page Header --}}
@@ -21,7 +87,7 @@ new class extends Component {
         @endif
 
         {{-- Product Form --}}
-        <form wire:submit="save" class="space-y-6">
+        <div class="space-y-6">
 
             {{-- Basic Information Card --}}
             <div class="bg-white rounded-lg shadow p-6 space-y-4">
@@ -37,6 +103,12 @@ new class extends Component {
                 {{-- Category --}}
                 <flux:select wire:model="category_id" label="Category">
                     <option value="">Select Category</option>
+                    @forelse ($categories as $category)
+                        <option value="{{$category->id}}">{{ $category->code }}-{{ $category->name}}</option>
+                    @empty
+                        <option disabled>Not Available</option>
+                    @endforelse
+                    
                 </flux:select>             
 
 
@@ -56,10 +128,39 @@ new class extends Component {
                     Cancel
                 </flux:button>
 
-                <flux:button type="submit" variant="primary">
+                <flux:button type="button" variant="primary" wire:click="save">
                     Save Product
                 </flux:button>
             </div>
-        </form>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div x-data="{ showConfirm: false }" x-show="showConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-semibold mb-4">Confirm Product Creation</h3>
+        <div class="space-y-2 mb-6">
+            <p><strong>Barcode:</strong> {{ $barcode }}</p>
+            <p><strong>Name:</strong> {{ $name }}</p>
+            <p><strong>Category:</strong> {{ $categories->where('id', $category_id)->first()->name ?? 'N/A' }}</p>
+            <p><strong>Stock:</strong> {{ $stock }}</p>
+            <p><strong>Price:</strong> ${{ number_format($price, 2) }}</p>
+        </div>
+        <div class="flex gap-3 justify-end">
+            <button @click="showConfirm = false" class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50">Cancel</button>
+            <button wire:click="confirmSave" @click="showConfirm = false" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Confirm & Create</button>
+        </div>
     </div>
 </div>
+</div>
+<script>
+document.addEventListener('livewire:init', () => {
+    Livewire.on('show-confirmation', () => {
+        // Find the modal and show it
+        const modal = document.querySelector('[x-data*="showConfirm"]');
+        if (modal) {
+            modal._x_dataStack[0].showConfirm = true;
+        }
+    });
+});
+</script>
