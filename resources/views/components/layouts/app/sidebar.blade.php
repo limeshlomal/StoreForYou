@@ -31,6 +31,12 @@
                 </flux:navlist.group>
             </flux:navlist>
 
+            <flux:navlist variant="outline">
+                <flux:navlist.group expandable :heading="__('Suppliers')" icon="shopping-bag">
+                    <flux:navlist.item icon="list-bullet" :href="route('suppliers.index')" :current="request()->routeIs('suppliers.index')" wire:navigate>List</flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
+
             <flux:spacer />
 
             <flux:navlist variant="outline">
