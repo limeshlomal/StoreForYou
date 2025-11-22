@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('barcode')->unique();
             $table->string('name');
-            $table->foreignId('category_id');
+            $table->foreignId('category_id')->constrained('categories');
             $table->decimal('retail_price', 10, 2);
             $table->integer('alert_quantity')->default(0);
+            $table->string('product_image')->nullable();
             $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');

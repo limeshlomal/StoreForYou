@@ -4,8 +4,10 @@ use Livewire\Volt\Component;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Livewire\WithFileUploads;
 
 new class extends Component {
+    use WithFileUploads;
     
 public function with()
 {
@@ -19,6 +21,7 @@ public $name;
 public $category_id;
 public $alert_quantity;
 public $price;
+public $product_image;
 
 
 public function save()
@@ -28,7 +31,8 @@ public function save()
         'name' => 'required|string|max:255',
         'category_id' => 'required',
         'alert_quantity' => 'required|integer|min:0',
-        'price' => 'required'
+        'price' => 'required',
+        'product_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
     ]);
 
     // Show confirmation modal
@@ -50,6 +54,7 @@ public function confirmSave()
             'category_id' => $this->category_id,
             'alert_quantity' => $this->alert_quantity,
             'retail_price' => $this->price,
+            'product_image' => $this->product_image->store('products', 'public'),
             'is_active' => true,
             'created_by' => Auth::id()
         ]);
@@ -119,6 +124,11 @@ public function confirmSave()
                 {{-- Price --}}
                 <flux:input wire:model="price" type="number" step="0.01" min="0" label="Price"
                     placeholder="0.00" required />
+                
+                {{-- Image --}}
+                <label class="font-medium mb-1 block">Product Image</label>
+                <input type="file" wire:model="product_image" class="border p-2 rounded w-full" accept="image/*">
+                @error('product_image') <span class="text-red-500">{{ $message }}</span> @enderror
             </div>
 
 
