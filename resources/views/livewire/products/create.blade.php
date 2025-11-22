@@ -17,7 +17,7 @@ public function with()
 public $barcode;
 public $name;
 public $category_id;
-public $stock;
+public $alert_quantity;
 public $price;
 
 
@@ -27,7 +27,7 @@ public function save()
         'barcode' => 'required',
         'name' => 'required|string|max:255',
         'category_id' => 'required',
-        'stock' => 'required|integer|min:0',
+        'alert_quantity' => 'required|integer|min:0',
         'price' => 'required'
     ]);
 
@@ -48,7 +48,7 @@ public function confirmSave()
             'barcode' => $this->barcode,
             'name' => $this->name,
             'category_id' => $this->category_id,
-            'quantity' => $this->stock,
+            'alert_quantity' => $this->alert_quantity,
             'retail_price' => $this->price,
             'is_active' => true,
             'created_by' => Auth::id()
@@ -112,8 +112,8 @@ public function confirmSave()
                 </flux:select>             
 
 
-                {{-- Stock --}}
-                <flux:input wire:model="stock" type="number" min="0" label="Stock Quantity" placeholder="0"
+                {{-- Alert Quantity --}}
+                <flux:input wire:model="alert_quantity" type="number" min="0" label="Alert Quantity" placeholder="0"
                     required />
 
                 {{-- Price --}}
@@ -143,7 +143,7 @@ public function confirmSave()
             <p><strong>Barcode:</strong> {{ $barcode }}</p>
             <p><strong>Name:</strong> {{ $name }}</p>
             <p><strong>Category:</strong> {{ $categories->where('id', $category_id)->first()->name ?? 'N/A' }}</p>
-            <p><strong>Stock:</strong> {{ $stock }}</p>
+            <p><strong>Alert Quantity:</strong> {{ $alert_quantity }}</p>
             <p><strong>Price:</strong> ${{ number_format($price, 2) }}</p>
         </div>
         <div class="flex gap-3 justify-end">

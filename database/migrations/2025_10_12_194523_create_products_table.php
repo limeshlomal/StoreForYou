@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('category_id');
             $table->decimal('retail_price', 10, 2);
-            $table->integer('quantity')->default(0);
+            $table->integer('alert_quantity')->default(0);
             $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');

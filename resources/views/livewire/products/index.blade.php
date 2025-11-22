@@ -7,7 +7,7 @@ new class extends Component {
 }; ?>
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-7xl mx-auto">
         {{-- Page Header --}}
         <div class="mb-6">
             <flux:heading size="xl">Product List</flux:heading>
