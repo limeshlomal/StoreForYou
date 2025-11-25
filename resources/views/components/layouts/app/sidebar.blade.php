@@ -18,7 +18,7 @@
             </flux:navlist>
             
             <flux:navlist variant="outline">
-                <flux:navlist.group expandable :heading="__('Products')" icon="shopping-bag">
+                <flux:navlist.group expandable :expanded="false" :heading="__('Products')" icon="shopping-bag">
                     <flux:navlist.item icon="list-bullet" :href="route('products.index')" :current="request()->routeIs('products.index')" wire:navigate>List</flux:navlist.item>
                     <flux:navlist.item icon="plus-circle" :href="route('products.create')" :current="request()->routeIs('products.create')" wire:navigate>Add</flux:navlist.item>
                     <flux:navlist.item icon="folder-plus" :href="route('categories.index')" :current="request()->routeIs('categories.index')" wire:navigate>Categories</flux:navlist.item>
@@ -26,32 +26,32 @@
             </flux:navlist>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group expandable :heading="__('Users')" icon="shopping-bag">
+                <flux:navlist.group expandable :expanded="false" :heading="__('Users')" icon="shopping-bag">
                     <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.index')" wire:navigate>Add</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group expandable :heading="__('Suppliers')" icon="shopping-bag">
+                <flux:navlist.group expandable :expanded="false" :heading="__('Suppliers')" icon="shopping-bag">
                     <flux:navlist.item icon="list-bullet" :href="route('suppliers.index')" :current="request()->routeIs('suppliers.index')" wire:navigate>Generate</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group expandable :heading="__('Barcode/Labels')" icon="shopping-bag">
+                <flux:navlist.group expandable :expanded="false" :heading="__('Barcode/Labels')" icon="shopping-bag">
                     <flux:navlist.item icon="list-bullet" :href="route('barcodes.index')" :current="request()->routeIs('barcodes.index')" wire:navigate>List</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group expandable :heading="__('Purchasing')" icon="shopping-bag">
+                <flux:navlist.group expandable :expanded="false" :heading="__('Purchasing')" icon="shopping-bag">
                     <flux:navlist.item icon="list-bullet" :href="route('purchasings.index')" :current="request()->routeIs('purchasings.index')" wire:navigate>List</flux:navlist.item>
                     <flux:navlist.item icon="plus-circle" :href="route('purchasings.create')" :current="request()->routeIs('purchasings.create')" wire:navigate>Add</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group expandable :heading="__('Invoices')" icon="shopping-bag">
+                <flux:navlist.group expandable :expanded="false" :heading="__('Invoices')" icon="shopping-bag">
                     <flux:navlist.item icon="plus-circle" :href="route('invoices.pos')" :current="request()->routeIs('invoices.pos')" wire:navigate>POS</flux:navlist.item>
                     <flux:navlist.item icon="list-bullet" :href="route('invoices.index')" :current="request()->routeIs('invoices.index')" wire:navigate>List</flux:navlist.item>
                     <flux:navlist.item icon="list-bullet" :href="route('invoices.hold')" :current="request()->routeIs('invoices.hold')" wire:navigate>Hold</flux:navlist.item>
