@@ -41,6 +41,15 @@ Route::middleware(['auth', 'verified'])->group(function (){
     Volt::route('/categories', 'categories.index')->name('categories.index');
     Volt::route('/users', 'users.index')->name('users.index');
     Volt::route('/suppliers', 'suppliers.index')->name('suppliers.index');
+    Volt::route('/barcode', 'barcodes.index')->name('barcodes.index');
+    Volt::route('/barcode/print', 'barcodes.print')->name('barcodes.print');
+    Volt::route('/purchasings', 'purchasings.index')->name('purchasings.index');
+    Volt::route('/purchasings/create', 'purchasings.create')->name('purchasings.create');
+    Volt::route('/invoices/pos', 'invoices.pos')->name('invoices.pos');
+    Volt::route('/invoices', 'invoices.index')->name('invoices.index');
+    Volt::route('/invoices/hold', 'invoices.hold')->name('invoices.hold');
+    Volt::route('/invoices/return', 'invoices.return')->name('invoices.return');
+    Volt::route('/invoices/due', 'invoices.due')->name('invoices.due');
 });
 
 require __DIR__.'/auth.php';

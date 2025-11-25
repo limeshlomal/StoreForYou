@@ -33,22 +33,34 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.group expandable :heading="__('Suppliers')" icon="shopping-bag">
-                    <flux:navlist.item icon="list-bullet" :href="route('suppliers.index')" :current="request()->routeIs('suppliers.index')" wire:navigate>List</flux:navlist.item>
+                    <flux:navlist.item icon="list-bullet" :href="route('suppliers.index')" :current="request()->routeIs('suppliers.index')" wire:navigate>Generate</flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
+
+            <flux:navlist variant="outline">
+                <flux:navlist.group expandable :heading="__('Barcode/Labels')" icon="shopping-bag">
+                    <flux:navlist.item icon="list-bullet" :href="route('barcodes.index')" :current="request()->routeIs('barcodes.index')" wire:navigate>List</flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
+
+            <flux:navlist variant="outline">
+                <flux:navlist.group expandable :heading="__('Purchasing')" icon="shopping-bag">
+                    <flux:navlist.item icon="list-bullet" :href="route('purchasings.index')" :current="request()->routeIs('purchasings.index')" wire:navigate>List</flux:navlist.item>
+                    <flux:navlist.item icon="plus-circle" :href="route('purchasings.create')" :current="request()->routeIs('purchasings.create')" wire:navigate>Add</flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
+
+            <flux:navlist variant="outline">
+                <flux:navlist.group expandable :heading="__('Invoices')" icon="shopping-bag">
+                    <flux:navlist.item icon="plus-circle" :href="route('invoices.pos')" :current="request()->routeIs('invoices.pos')" wire:navigate>POS</flux:navlist.item>
+                    <flux:navlist.item icon="list-bullet" :href="route('invoices.index')" :current="request()->routeIs('invoices.index')" wire:navigate>List</flux:navlist.item>
+                    <flux:navlist.item icon="list-bullet" :href="route('invoices.hold')" :current="request()->routeIs('invoices.hold')" wire:navigate>Hold</flux:navlist.item>
+                    <flux:navlist.item icon="list-bullet" :href="route('invoices.return')" :current="request()->routeIs('invoices.return')" wire:navigate>Return</flux:navlist.item>
+                    <flux:navlist.item icon="list-bullet" :href="route('invoices.due')" :current="request()->routeIs('invoices.due')" wire:navigate>Due</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:spacer />
-
-            <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
-                </flux:navlist.item>
-
-                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                {{ __('Documentation') }}
-                </flux:navlist.item>
-            </flux:navlist>
-
 
 
             <!-- Desktop User Menu -->
