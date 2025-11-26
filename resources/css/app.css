@@ -76,6 +76,33 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+/* Fix active navigation items to have proper contrast using main-sidebar class */
+.main-sidebar [aria-current="page"],
+.main-sidebar [data-current="true"] {
+    background-color: var(--color-primary-600) !important;
+    color: white !important;
+}
+
+.main-sidebar [aria-current="page"] *,
+.main-sidebar [data-current="true"] * {
+    color: white !important;
+}
+
+.dark .main-sidebar [aria-current="page"],
+.dark .main-sidebar [data-current="true"] {
+    background-color: var(--color-primary-500) !important;
+}
+
+.main-sidebar [aria-current="page"]:hover,
+.main-sidebar [data-current="true"]:hover {
+    background-color: var(--color-primary-700) !important;
+}
+
+.dark .main-sidebar [aria-current="page"]:hover,
+.dark .main-sidebar [data-current="true"]:hover {
+    background-color: var(--color-primary-600) !important;
+}
+
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
