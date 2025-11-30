@@ -33,7 +33,7 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.group expandable :expanded="request()->routeIs('suppliers.*')" :heading="__('Suppliers')" icon="shopping-bag">
-                    <flux:navlist.item icon="list-bullet" :href="route('suppliers.index')" :current="request()->routeIs('suppliers.index')" wire:navigate>Generate</flux:navlist.item>
+                    <flux:navlist.item icon="list-bullet" :href="route('suppliers.index')" :current="request()->routeIs('suppliers.index')" wire:navigate>Add</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 

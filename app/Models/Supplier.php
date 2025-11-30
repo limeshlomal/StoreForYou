@@ -8,12 +8,15 @@ use App\Models\User;
 
 class Supplier extends Model
 {
+    protected $table = 'supplier';
+    
     protected $fillable = [
         'code',
         'name',
         'mobile',
         'address',
-        'created_by',        
+        'created_by',
+        'updated_by',
     ];
 
     public function user(){

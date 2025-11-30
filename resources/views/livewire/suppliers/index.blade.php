@@ -1,9 +1,47 @@
 <?php
 
 use Livewire\Volt\Component;
+use App\Models\Supplier;
+use Illuminate\Support\Facades\Auth;
 
 new class extends Component {
-    //
+    public $supplier_code;
+    public $supplier_name;
+    public $supplier_mobile;
+    public $supplier_address;
+    public $search = '';
+
+    public function save() 
+    {
+        $this->validate([
+            'supplier_code' => 'required',
+            'supplier_name' => 'required|string'
+        ]);
+
+        try {
+            if(Supplier::where('code', $this->supplier_code)->exists()){
+                $this->dispatch('show-error', message: 'Supplier code already exists. Please use a different code');
+                return;
+            }
+
+            Supplier::create([
+                'code' => $this->supplier_code,
+                'name' => $this->supplier_name,
+                'mobile' => $this->supplier_mobile,
+                'address' => $this->supplier_address,
+                'created_by' => Auth::id(),
+                'updated_by' => Auth::id(),
+            ]);
+
+            $this->reset();
+            $this->dispatch('show-success', message:'Supplier created successfully!');
+
+        } catch (\Exception $e) {
+            \Log::error('Supplier creation error: ' . $e->getMessage());
+            $this->dispatch('show-error', message: 'An error occured while creating supplier. Please try again. Error: ' . $e->getMessage());
+        }
+    }
+    
 }; ?>
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4">
