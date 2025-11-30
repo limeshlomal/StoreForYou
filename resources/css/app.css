@@ -98,9 +98,23 @@ select:focus[data-flux-control] {
     background-color: var(--color-primary-700) !important;
 }
 
-.dark .main-sidebar [aria-current="page"]:hover,
 .dark .main-sidebar [data-current="true"]:hover {
     background-color: var(--color-primary-600) !important;
+}
+
+/* Fix active state (click) to ensure text remains visible */
+.main-sidebar [data-flux-navlist-item]:active {
+    background-color: var(--color-primary-600) !important;
+    color: white !important;
+}
+
+.main-sidebar [data-flux-navlist-item]:active * {
+    color: white !important;
+}
+
+/* Invert logo in sidebar to make it white */
+.main-sidebar img[alt="Logo"] {
+    filter: brightness(0) invert(1);
 }
 
 /* \[:where(&)\]:size-4 {
