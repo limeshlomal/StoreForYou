@@ -188,7 +188,7 @@ new class extends Component {
 
             {{-- Right Side - Category List --}}
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-4">
-                <div class="flex justify-between items-center">
+                <div class="flex justify-between items-center mb-4">
                     <flux:input 
                         wire:model.live="search" 
                         placeholder="Search categories..." 

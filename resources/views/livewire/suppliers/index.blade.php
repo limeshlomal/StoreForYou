@@ -3,6 +3,7 @@
 use Livewire\Volt\Component;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Auth;
+use Livewire\WithPagination;
 
 new class extends Component {
     public $supplier_code;
@@ -10,6 +11,25 @@ new class extends Component {
     public $supplier_mobile;
     public $supplier_address;
     public $search = '';
+
+    use WithPagination;
+    public $perPage = 5;
+
+    public function with()
+    {
+        return [
+            'suppliers' => Supplier::query()
+                ->where('name', 'like', "%{$this->search}%")
+                ->orWhere('code', 'like', "%{$this->search}%")
+                ->latest()
+                ->paginate($this->perPage)
+        ];
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
 
     public function save() 
     {
@@ -87,11 +107,48 @@ new class extends Component {
             {{-- Right side - Suppliers List--}}
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-4">      
                 <div class="flex justify-between items-center">
-                    <flux:input wire:model="search" placeholder="Search suppliers..." class="w-64"/>
+                    <flux:input wire:model.live="search" placeholder="Search suppliers..." class="w-64"/>
                 </div>
                 <div class="overflow-x-auto">
-                    
-                </div>      
+                    <table class="min-w-full border border-gray-200">
+                        <thead class="bg-gray-100 text-gray-700 text-sm uppercase">
+                            <tr>
+                                 <th class="px-6 py-3 text-left font-semibold">#</th>
+                                 <th class="px-6 py-3 text-left font-semibold">Code</th>
+                                 <th class="px-6 py-3 text-left font-semibold">Name</th>
+                                 <th class="px-6 py-3 text-left font-semibold">Mobile</th>
+                                 <th class="px-6 py-3 text-left font-semibold">Address</th>
+                                 <th class="px-6 py-3 text-left font-semibold">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 text-sm text-gray-700">
+                            @forelse ($suppliers as $supplier)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">{{ $loop->iteration }}</td>
+                                <td class="px-6 py-4 font-medium">{{ $supplier->code }}</td>
+                                <td class="px-6 py-4">{{ $supplier->name }}</td>
+                                <td class="px-6 py-4">{{ $supplier->mobile }}</td>
+                                <td class="px-6 py-4">{{ $supplier->address }}</td>
+                                <td class="px-6 py-4 flex space-x-2">
+                                    <flux:button type="button" size="sm" variant="danger" wire:click="edit({{ $supplier->id }})">
+                                        Edit
+                                    </flux:button>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">No suppliers found.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>     
+                {{-- Pagination --}}
+                @if ($suppliers->hasPages())
+                    <div class="mt-4">
+                        {{ $suppliers->links() }}
+                    </div>
+                @endif 
             </div>
         </div>
 

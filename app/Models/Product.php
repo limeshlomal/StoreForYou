@@ -13,7 +13,7 @@ class Product extends Model
         'barcode',
         'name',
         'category_id',
-        'quantity',
+        'alert_quantity',
         'retail_price',
         'is_active',
         'created_by'
@@ -21,7 +21,7 @@ class Product extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
-        'stock' => 'integer',
+        'quantity' => 'integer',
         'is_active' => 'boolean',
     ];
 
