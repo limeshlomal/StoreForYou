@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function (){
     Volt::route('/barcode/print', 'barcodes.print')->name('barcodes.print');
     Volt::route('/purchasings', 'purchasings.index')->name('purchasings.index');
     Volt::route('/purchasings/create', 'purchasings.create')->name('purchasings.create');
+    Volt::route('/purchasings/{purchasing}/edit', 'purchasings.edit')->name('purchasings.edit');
     Volt::route('/invoices/pos', 'invoices.pos')->name('invoices.pos');
     Volt::route('/invoices', 'invoices.index')->name('invoices.index');
     Volt::route('/invoices/hold', 'invoices.hold')->name('invoices.hold');
