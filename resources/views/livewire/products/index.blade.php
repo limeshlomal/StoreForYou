@@ -3,6 +3,7 @@
 use Livewire\Volt\Component;
 use Livewire\WithPagination;
 use App\Models\Product;
+use App\Models\Inventory;
 
 new class extends Component {
     use WithPagination;
@@ -12,13 +13,18 @@ new class extends Component {
     public function with()
     {
        return [
-           'products' => Product::query()
-               ->where('name', 'like', "%{$this->search}%")
-               ->orWhere('barcode', 'like', "%{$this->search}%")
-               ->latest()
-               ->paginate($this->perPage)
+           'products' => Product::withSum('inventories', 'quantity')
+    ->where(function ($q) {
+        $q->where('name', 'like', "%{$this->search}%")
+          ->orWhere('barcode', 'like', "%{$this->search}%");
+    })
+    ->latest()
+    ->paginate($this->perPage)
+
        ]; 
     }
+
+
 }; ?>
 
 <div class="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4">
@@ -52,10 +58,10 @@ new class extends Component {
                     <td class="px-6 py-4">{{ $product->name }}</td>
                     <td class="px-6 py-4">{{ $product->category->name }}</td>
                     <td class="px-6 py-4">{{ $product->alert_quantity }}</td>
-                    <td class="px-6 py-4">{{ $product->stock }}</td>
-                    <td class="px-6 py-4">150</td>
+                    <td class="px-6 py-4">{{ $product->inventories->sum('quantity') }}</td>
+                    <td class="px-6 py-4">{{ $product->retail_price }}</td>
                     <td class="px-6 py-4 flex space-x-2">
-                        <a class="text-blue-600 hover:text-blue-800 font-medium">Edit</button>
+                        <a class="text-blue-600 hover:text-blue-800 font-medium" href="{{ route('products.edit', $product) }}">Edit</a>
                     </td>
                 </tr>
                 @empty

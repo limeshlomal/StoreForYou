@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function (){
     Volt::route('/products', 'products.index')->name('products.index');
     Volt::route('/products/create', 'products.create')->name('products.create');
-    Volt::route('/products/edit', 'products.edit')->name('products.edit');
+    Volt::route('/products/{product}/edit', 'products.edit')->name('products.edit');
     Volt::route('/categories', 'categories.index')->name('categories.index');
     Volt::route('/users', 'users.index')->name('users.index');
     Volt::route('/suppliers', 'suppliers.index')->name('suppliers.index');
@@ -52,5 +52,6 @@ Route::middleware(['auth', 'verified'])->group(function (){
     Volt::route('/invoices/return', 'invoices.return')->name('invoices.return');
     Volt::route('/invoices/due', 'invoices.due')->name('invoices.due');
 });
+
 
 require __DIR__.'/auth.php';

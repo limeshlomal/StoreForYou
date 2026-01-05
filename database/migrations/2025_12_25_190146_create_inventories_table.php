@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Product::class);
             $table->unsignedBigInteger('quantity');
             $table->decimal('cost_price', 10, 2);
+            $table->decimal('retail_price', 10, 2)->nullable();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by');
             $table->timestamps();

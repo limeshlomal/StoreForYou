@@ -61,6 +61,19 @@ new class extends Component {
             $this->dispatch('show-error', message: 'An error occured while creating supplier. Please try again. Error: ' . $e->getMessage());
         }
     }
+    public function edit($id)
+    {
+        $this->dispatch('edit-supplier', id: $id);
+    }
+
+    /* Listen for updates from child component */
+    #[\Livewire\Attributes\On('supplier-updated')] 
+    public function refreshList()
+    {
+        // Livewire automatically refreshes the component when an event is targeted at it, 
+        // or we can just leave this empty if we just need the render to re-run.
+        // But explicit is better.
+    }
     
 }; ?>
 
@@ -152,6 +165,8 @@ new class extends Component {
             </div>
         </div>
 
+        {{-- Edit Modal Component --}}
+        <livewire:suppliers.edit />
 
     </div>
 </div>
