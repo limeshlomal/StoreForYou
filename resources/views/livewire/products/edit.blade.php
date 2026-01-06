@@ -1,9 +1,82 @@
 <?php
 
 use Livewire\Volt\Component;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Inventory;
+use Livewire\WithPagination;
 
 new class extends Component {
-    
+    public Product $product;
+    public Category $category;
+    public $product_name;
+    public $barcode;
+    public $category_id;
+    public $alert_quantity;
+    public $retail_price;
+    public $is_active;
+    public $total_quantity = 0;
+
+    use WithPagination;
+
+    public function mount(Product $product)
+    {
+        $this->product = $product;
+        $this->category = $product->category;
+        $this->product_name = $product->name;
+        $this->barcode = $product->barcode;
+        $this->category_id = $product->category_id;
+        $this->alert_quantity = $product->alert_quantity;
+        $this->retail_price = $product->retail_price;
+        $this->is_active = $product->is_active;
+        $this->total_quantity = $this->product->inventories()->sum('quantity');
+        $this->inventory = Inventory::where('product_id', $product->id)->get();
+    }
+
+    public function with()
+    {
+        return [
+            'categories' => Category::all(),
+            'inventories' => Inventory::where('product_id', $this->product->id)->paginate(10),
+        ];
+    }
+
+    public function update()
+    {
+        $this->validate([
+            'product_name' => 'required|string|max:255',
+            'barcode' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'alert_quantity' => 'required|numeric',
+            'retail_price' => 'required|numeric',
+            'is_active' => 'boolean',
+        ]);
+
+        $this->product->update([
+            'name' => $this->product_name,
+            'barcode' => $this->barcode,
+            'category_id' => $this->category_id,
+            'alert_quantity' => $this->alert_quantity,
+            'retail_price' => $this->retail_price,
+            'is_active' => $this->is_active,
+        ]);
+
+        $this->dispatch('product-updated');
+        $this->dispatch('show-success', message: 'Product updated successfully');
+    }
+
+    public function delete()
+    {
+        $this->product->delete();
+        $this->dispatch('product-deleted');
+        $this->dispatch('show-success', message: 'Product deleted successfully');
+    }
+
+    public function getTotalQuantity($product_id)
+    {
+        return Inventory::where('product_id', $product_id)->sum('quantity');
+    }
+
 }; ?>
 
 <div class="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4 sm:px-6 lg:px-8" x-data="{ showDeleteConfirm: @entangle('showDeleteConfirm') }">
@@ -31,23 +104,57 @@ new class extends Component {
                     <flux:heading size="lg" class="mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">Basic Information</flux:heading>
                     
                     <div class="space-y-6">
-                        <flux:input label="Product Name" wire:model="name" placeholder="e.g. Wireless Mouse" />
+                        <flux:input label="Product Name" wire:model="product_name" value="{{ $product->name }}"/>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <flux:input label="Barcode / SKU" wire:model="barcode" icon="qr-code" placeholder="Scan or enter barcode" />
-                             <!-- Placeholder for categories for now if Category model exists but I don't want to break it if it's missing or empty. Using native select or flux select if available. 
-                                  User codebase has 'categories' table implied by Product model relationship.
-                             -->
+                            <flux:input label="Barcode / SKU" wire:model="barcode" icon="qr-code" value="{{ $product->barcode }}" />
+
                              <div>
                                 <flux:label>Category</flux:label>
                                 <select wire:model="category_id" class="w-full rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-primary-500 focus:border-primary-500 py-2 px-3">
                                     <option value="">Select Category</option>
-                                
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <flux:textarea label="Description" wire:model="description" rows="4" placeholder="Enter detailed product description..." />
+                   <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                    <flux:heading size="lg" class="mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">Inventory Details</flux:heading>
+                    
+                    <div class="space-y-6">
+                        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Stock Date</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Cost Price</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">IN</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">OUT</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($inventories as $inventory)
+                                <tr>
+                                    <td class="px-4 py-2">{{ $inventory->created_at }}</td>
+                                    <td class="px-4 py-2">{{ $inventory->cost_price }}</td>
+                                    <td class="px-4 py-2">{{ $inventory->quantity }}</td>
+                                    <td class="px-4 py-2"></td>
+                                    <td class="px-4 py-2"></td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="px-4 py-2 text-center">No inventory records found.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="flex justify-end mt-4">
+                        {{ $inventories->links() }}
                     </div>
                 </div>
             </div>
@@ -61,10 +168,7 @@ new class extends Component {
                     
                     <div class="space-y-4">
                         <flux:input type="number" step="0.01" label="Retail Price" wire:model="retail_price" icon="currency-dollar" placeholder="0.00" />
-                        
-                        <!-- Cost price is not in fillable, but often requested. Leaving it out as per explicit model fields for now to avoid errors, or adding as a disabled field if needed? 
-                             The user said "remove functionalities", implies simplifying. I'll stick to what's in the Model.
-                        -->
+                     
                     </div>
                 </div>
 
@@ -73,7 +177,8 @@ new class extends Component {
                     <flux:heading size="lg" class="mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">Inventory & Status</flux:heading>
                     
                     <div class="space-y-4">
-                        <flux:input type="number" label="Alert Quantity" wire:model="alert_quantity" placeholder="e.g. 10" />
+                        <flux:input type="number" label="Total Quantity" wire:model="total_quantity" readonly />
+                        <flux:input type="number" label="Alert Quantity" wire:model="alert_quantity" />
                         
                         <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-700">
                             <div>
@@ -100,7 +205,7 @@ new class extends Component {
 
                 <!-- Action Card -->
                  <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
-                     <flux:button wire:click="save" variant="primary" class="w-full justify-center py-3 text-lg shadow-lg hover:shadow-xl transition-all">
+                     <flux:button wire:click="update" variant="primary" class="w-full justify-center py-3 text-lg shadow-lg hover:shadow-xl transition-all">
                         Save Changes
                      </flux:button>
                  </div>
