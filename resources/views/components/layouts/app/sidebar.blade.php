@@ -22,12 +22,15 @@
                     <flux:navlist.item icon="list-bullet" :href="route('products.index')" :current="request()->routeIs('products.index')" wire:navigate>List</flux:navlist.item>
                     <flux:navlist.item icon="plus-circle" :href="route('products.create')" :current="request()->routeIs('products.create')" wire:navigate>Add</flux:navlist.item>
                     <flux:navlist.item icon="folder-plus" :href="route('categories.index')" :current="request()->routeIs('categories.index')" wire:navigate>Categories</flux:navlist.item>
+                    <flux:navlist.item icon="folder-plus" :href="route('products.bulk-upload')" :current="request()->routeIs('products.bulk-upload')" wire:navigate>Bulk Upload</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
             <flux:navlist variant="outline">
                 <flux:navlist.group expandable :expanded="request()->routeIs('users.*')" :heading="__('Users')" icon="shopping-bag">
                     <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.index')" wire:navigate>Add</flux:navlist.item>
+                    <flux:navlist.item icon="users" :href="route('users.roles.index')" :current="request()->routeIs('users.roles.index')" wire:navigate>Roles</flux:navlist.item>
+                    <flux:navlist.item icon="users" :href="route('users.permissions.index')" :current="request()->routeIs('users.permissions.index')" wire:navigate>Permissions</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 

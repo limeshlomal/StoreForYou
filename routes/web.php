@@ -37,9 +37,14 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function (){
     Volt::route('/products', 'products.index')->name('products.index');
     Volt::route('/products/create', 'products.create')->name('products.create');
+    Volt::route('/products/bulk-upload', 'products.bulk-upload')->name('products.bulk-upload');
     Volt::route('/products/{product}/edit', 'products.edit')->name('products.edit');
     Volt::route('/categories', 'categories.index')->name('categories.index');
     Volt::route('/users', 'users.index')->name('users.index');
+    Volt::route('/users/roles-index', 'users.roles-index')->name('users.roles.index');
+    Volt::route('/users/create-roles', 'users.create-roles')->name('users.roles.create');
+    Volt::route('/users/permissions-index', 'users.permission-index')->name('users.permissions.index');
+    Volt::route('/users/create-permissions', 'users.create-permissions')->name('users.permissions.create');
     Volt::route('/suppliers', 'suppliers.index')->name('suppliers.index');
     Volt::route('/barcode', 'barcodes.index')->name('barcodes.index');
     Volt::route('/barcode/print', 'barcodes.print')->name('barcodes.print');

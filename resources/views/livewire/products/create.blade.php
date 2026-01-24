@@ -31,8 +31,8 @@ public function save()
         'name' => 'required|string|max:255',
         'category_id' => 'required',
         'alert_quantity' => 'required|integer|min:0',
-        'price' => 'required',
-        'product_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        'price' => 'required|numeric|min:0',
+        'product_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
     ]);
 
     // Show confirmation modal
@@ -54,7 +54,7 @@ public function confirmSave()
             'category_id' => $this->category_id,
             'alert_quantity' => $this->alert_quantity,
             'retail_price' => $this->price,
-            'product_image' => $this->product_image->store('products', 'public'),
+            'product_image' => $this->product_image ? $this->product_image->store('products', 'public') : null,
             'is_active' => true,
             'created_by' => Auth::id()
         ]);
@@ -84,11 +84,26 @@ public function confirmSave()
                 <flux:heading size="xl" class="text-slate-900 dark:text-white font-bold">Add New Product</flux:heading>
                 <p class="text-slate-500 dark:text-slate-400 mt-1">Create a new product for your inventory</p>
             </div>
+            
             <div class="flex gap-3">
                 <flux:button variant="ghost" wire:click="cancel" class="text-slate-600">Cancel</flux:button>
-                <flux:button variant="primary" wire:click="save" class="shadow-lg shadow-primary-500/20">Save Product</flux:button>
+                <flux:button 
+    variant="primary"
+    wire:click="save"
+    wire:loading.attr="disabled"
+    wire:target="product_image,save"
+>
+    <span wire:loading.remove wire:target="product_image,save">Save Product</span>
+    <span wire:loading wire:target="product_image">Uploading...</span>
+</flux:button>
+
             </div>
         </div>
+
+        <div wire:loading wire:target="product_image" class="text-sm text-primary-600 mt-2">
+    Uploading image, please wait...
+</div>
+
 
         {{-- Success Message --}}
         @if (session('success'))
@@ -168,9 +183,18 @@ public function confirmSave()
             </div>
         </div>
     </div>
+
+
+
     
     <!-- Confirmation Modal -->
-    <div x-data="{ showConfirm: false }" x-show="showConfirm" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity" style="display: none;">
+        <div 
+    x-data="{ showConfirm: false }"
+    x-on:show-confirmation.window="showConfirm = true"
+    x-show="showConfirm"
+    x-transition
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50"
+>
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all">
             <div class="text-center mb-6">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary-100 dark:bg-primary-900/30 mb-4">
@@ -196,14 +220,4 @@ public function confirmSave()
         </div>
     </div>
 </div>
-<script>
-document.addEventListener('livewire:init', () => {
-    Livewire.on('show-confirmation', () => {
-        // Find the modal and show it
-        const modal = document.querySelector('[x-data*="showConfirm"]');
-        if (modal) {
-            modal._x_dataStack[0].showConfirm = true;
-        }
-    });
-});
-</script>
+

@@ -66,6 +66,18 @@ new class extends Component {
                         required
                     />
 
+                    {{-- User Role --}}
+                    <flux:select 
+                        wire:model="user_role" 
+                        label="Role" 
+                        placeholder="Select Role" 
+                        required 
+                    >
+                        <option value="cashier">Cashier</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                    </flux:select>
+
                     {{-- Action Buttons --}}
                     <div class="flex gap-3 justify-end">
                         <flux:button type="button" variant="ghost" wire:click="cancel">
